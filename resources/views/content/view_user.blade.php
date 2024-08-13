@@ -3,9 +3,7 @@
         <div class="card">
             <div class="card-header">
                 <h2>{{$title}}</h2>
-                <div class="d-flex flex-row-reverse"><button
-                        class="btn btn-sm btn-pill btn-outline-primary font-weight-bolder" id="createNewUser"><i
-                            class="fas fa-plus"></i>add data </button></div>
+                <div class="d-flex flex-row-reverse"><button class="btn btn-sm btn-pill btn-outline-primary font-weight-bolder" id="createNewUser"><i class="fas fa-plus"></i>add data </button></div>
             </div>
             <div class="card-body">
                 <div class="col-md-12">
@@ -43,8 +41,7 @@
 </div>
 
 <!-- Modal-->
-<div class="modal fade" id="modal-user" data-backdrop="static" tabindex="-1" role="dialog"
-    aria-labelledby="staticBackdrop" aria-hidden="true">
+<div class="modal fade" id="modal-user" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary">
@@ -61,8 +58,8 @@
                         <input type="email" name="email" class="form-control" id="email" placeholder="email"><br>
                         <select name="level" class="form-control" id="level">
                             <option value="-">Pilih Level</option>
-                            <option value="1">Operator</option>
-                            <option value="2">Member</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Customer">Customer</option>
                         </select><br>
                         <input type="text" name="password" class="form-control" placeholder="password"><br>
                         <input type="hidden" name="user_id" id="user_id" value="">
@@ -81,57 +78,57 @@
 
 @push('scripts')
 <script>
-    $('document').ready(function () {
+    $('document').ready(function() {
         // success alert
         function swal_success() {
             Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: false,
-                timer: 1000
+                position: 'top-end'
+                , icon: 'success'
+                , title: 'Your work has been saved'
+                , showConfirmButton: false
+                , timer: 1000
             })
         }
         // error alert
         function swal_error() {
             Swal.fire({
-                position: 'centered',
-                icon: 'error',
-                title: 'Something goes wrong !',
-                showConfirmButton: true,
-            })
+                position: 'centered'
+                , icon: 'error'
+                , title: 'Something goes wrong !'
+                , showConfirmButton: true
+            , })
         }
         // table serverside
         var table = $('#tableUser').DataTable({
-            processing: false,
-            serverSide: true,
-            ordering: false,
-            dom: 'Bfrtip',
-            buttons: [
+            processing: false
+            , serverSide: true
+            , ordering: false
+            , dom: 'Bfrtip'
+            , buttons: [
                 'copy', 'excel', 'pdf'
-            ],
-            ajax: "{{ route('users.index') }}",
-            columns: [{
-                    data: 'name',
-                    name: 'name'
-                },
-                {
-                    data: 'email',
-                    name: 'email'
-                },
-                {
-                    data: 'level',
-                    name: 'level'
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
-                },
             ]
+            , ajax: "{{ route('users.index') }}"
+            , columns: [{
+                    data: 'name'
+                    , name: 'name'
+                }
+                , {
+                    data: 'email'
+                    , name: 'email'
+                }
+                , {
+                    data: 'level'
+                    , name: 'level'
+                }
+                , {
+                    data: 'action'
+                    , name: 'action'
+                    , orderable: false
+                    , searchable: false
+                }
+            , ]
         });
-        
+
         // csrf token
         $.ajaxSetup({
             headers: {
@@ -139,16 +136,16 @@
             }
         });
         // initialize btn add
-        $('#createNewUser').click(function () {
+        $('#createNewUser').click(function() {
             $('#saveBtn').val("create user");
             $('#user_id').val('');
             $('#formUser').trigger("reset");
             $('#modal-user').modal('show');
         });
         // initialize btn edit
-        $('body').on('click', '.editUser', function () {
+        $('body').on('click', '.editUser', function() {
             var user_id = $(this).data('id');
-            $.get("{{route('users.index')}}" + '/' + user_id + '/edit', function (data) {
+            $.get("{{route('users.index')}}" + '/' + user_id + '/edit', function(data) {
                 $('#saveBtn').val("edit-user");
                 $('#modal-user').modal('show');
                 $('#user_id').val(data.id);
@@ -158,24 +155,24 @@
             })
         });
         // initialize btn save
-        $('#saveBtn').click(function (e) {
+        $('#saveBtn').click(function(e) {
             e.preventDefault();
             $(this).html('Save');
 
             $.ajax({
-                data: $('#formUser').serialize(),
-                url: "{{ route('users.store') }}",
-                type: "POST",
-                dataType: 'json',
-                success: function (data) {
+                data: $('#formUser').serialize()
+                , url: "{{ route('users.store') }}"
+                , type: "POST"
+                , dataType: 'json'
+                , success: function(data) {
 
                     $('#formUser').trigger("reset");
                     $('#modal-user').modal('hide');
                     swal_success();
                     table.draw();
 
-                },
-                error: function (data) {
+                }
+                , error: function(data) {
                     swal_error();
                     $('#saveBtn').html('Save Changes');
                 }
@@ -183,27 +180,27 @@
 
         });
         // initialize btn delete
-        $('body').on('click', '.deleteUser', function () {
+        $('body').on('click', '.deleteUser', function() {
             var user_id = $(this).data("id");
 
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                title: 'Are you sure?'
+                , text: "You won't be able to revert this!"
+                , icon: 'warning'
+                , showCancelButton: true
+                , confirmButtonColor: '#3085d6'
+                , cancelButtonColor: '#d33'
+                , confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        type: "DELETE",
-                        url: "{{route('users.store')}}" + '/' + user_id,
-                        success: function (data) {
+                        type: "DELETE"
+                        , url: "{{route('users.store')}}" + '/' + user_id
+                        , success: function(data) {
                             swal_success();
                             table.draw();
-                        },
-                        error: function (data) {
+                        }
+                        , error: function(data) {
                             swal_error();
                         }
                     });
