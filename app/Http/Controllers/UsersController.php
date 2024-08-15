@@ -2,86 +2,118 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use DataTables;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
 
 class UsersController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-    } 
-
-    public function index(Request $request)
-    {
-        $data = [
-            'count_user' => User::latest()->count(),
-            'menu'       => 'menu.v_menu_admin',
-            'content'    => 'content.view_user',
-            'title'    => 'Table User'
-        ];
-
-        if ($request->ajax()) {
-            $q_user = User::select('*')->where('level','!=', 0)->orderByDesc('created_at');
-            return Datatables::of($q_user)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row){
-     
-                        $btn = '<div data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-sm btn-icon btn-outline-success btn-circle mr-2 edit editUser"><i class=" fi-rr-edit"></i></div>';
-                        $btn = $btn.' <div data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-sm btn-icon btn-outline-danger btn-circle mr-2 deleteUser"><i class="fi-rr-trash"></i></div>';
- 
-                         return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
-        }
-
-        return view('layouts.v_template',$data);
     }
 
+    /**
+     * Display a listing of the users.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $users = User::all();
+        return view('content.user.index', compact('users'));
+    }
+
+    /**
+     * Show the form for creating a new user.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
-        //
+        return view('content.user.create');
     }
 
+    /**
+     * Store a newly created user in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
-        User::updateOrCreate(['id' => $request->user_id],
-                [
-                 'name' => $request->name,
-                 'email' => $request->email,
-                 'level' => $request->level,
-                 'password' => Hash::make($request->password),
-                ]);        
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'is_admin' => 'sometimes|boolean',
+        ]);
 
-        return response()->json(['success'=>'User saved successfully!']);
+        $validatedData['password'] = Hash::make($validatedData['password']);
+        User::create($validatedData);
+
+        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
     }
 
-    public function show($id)
+    /**
+     * Display the specified user.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function show(User $user)
     {
         //
     }
 
-    public function edit($id)
+    /**
+     * Show the form for editing the specified user.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(User $user)
     {
-        $User = User::find($id);
-        return response()->json($User);
-
+        return view('content.user.edit', compact('user'));
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified user in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, User $user)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'sometimes|string|min:8|confirmed',
+            'is_admin' => 'sometimes|boolean',
+        ]);
+
+        if ($request->filled('password')) {
+            $validatedData['password'] = Hash::make($validatedData['password']);
+        } else {
+            unset($validatedData['password']);
+        }
+
+        $user->update($validatedData);
+
+        return redirect()->route('users.index')->with('success', 'User berhasil diupdate.');
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified user from storage.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(User $user)
     {
-        User::find($id)->delete();
+        $user->delete();
 
-        return response()->json(['success'=>'Customer deleted!']);
+        return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
     }
 }
