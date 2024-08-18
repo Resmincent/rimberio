@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\User;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -23,11 +26,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $data = array(
-            'count_user' => DB::table('users')->count(),
-            'menu'      => 'menu.v_menu_admin',
-            'content' => 'content.view_dashboard'
-        );
-        return view('layouts.v_template',$data);
+        $user = User::count();
+        $product = Product::count();
+
+        return view('content.view_dashboard', compact('user', 'product'));
     }
 }

@@ -26,6 +26,7 @@
     <link href="{{asset('metch')}}/css/themes/layout/aside/darkf552.css?v=7.1.8" rel="stylesheet" type="text/css" />
     <link href="{{asset('metch')}}/uiicon/css/uicons-regular-rounded.css" rel="stylesheet">
     {{-- cdn --}}
+    <link rel="shortcut icon" href="{{ asset('metch/media/logos/image.png') }}" />
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.23/b-1.6.5/b-html5-1.6.5/datatables.min.css" />
 
@@ -76,7 +77,7 @@
     <div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
         <!--begin::Logo-->
         <a href="#">
-            {{-- <img alt="Logo" src="{{asset('metch')}}/media/logos/logo-light.png" /> --}}
+            <img alt="Logo" src="{{asset('metch/media/bg/icon.jpeg')}}" />
             <div class="text-white"><i class="fab fa-angrycreative fa-4x"></i></div>
         </a>
         <!--end::Logo-->

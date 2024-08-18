@@ -20,6 +20,7 @@
                                     {{-- <th>No.</th> --}}
                                     <th>Product</th>
                                     <th>Name</th>
+                                    <th>ingredients</th>
                                     <th>Description</th>
                                     <th>Price</th>
                                     <th style="width:90px;">Action</th>
@@ -28,9 +29,10 @@
                             <tbody class="text-center">
                                 @foreach ($products as $p)
                                 <tr>
-                                    <td> <img src="{{ asset('storage/' . $p->image) }}" alt="peoduct Image" class="img-thumbnail" style="max-width: 200px;"></td>
+                                    <td> <img src="{{ asset('storage/' . $p->image) }}" alt="peoduct Image" class="img-thumbnail" style="max-width: 80px;"></td>
                                     <td>{{$p->name}}</td>
-                                    <td>{{$p->description}}</td>
+                                    <td>{{ \Illuminate\Support\Str::words($p->ingredients, 20) }}</td>
+                                    <td>{{ \Illuminate\Support\Str::words($p->description, 20) }}</td>
                                     <td>{{FormatRupiah($p->price)}}</td>
                                     <td>
                                         <!--begin::Menu-->

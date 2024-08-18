@@ -36,6 +36,7 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'description' => 'required',
+            'ingredients' => 'required',
             'price' => 'required|numeric|min:0',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
@@ -61,7 +62,9 @@ class ProductController extends Controller
             'name' => 'required|max:255',
             'description' => 'required',
             'price' => 'required|numeric|min:0',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'ingredients' => 'required',
+
         ]);
 
         if ($request->hasFile('image')) {

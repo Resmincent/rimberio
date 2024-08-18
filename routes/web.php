@@ -3,12 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsersController;
-// use App\Http\Controllers\DiscussionController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\LandingPageController;
 use Illuminate\Support\Facades\Auth;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -21,18 +20,26 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+// Landing Page
 Route::get('/', [LandingPageController::class, 'index'])->name('landing');
 
-
+// Authentication Routes
 Auth::routes();
 
+// Home Route for Admins
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+// User Management Routes
 Route::resource('users', UsersController::class);
-// Route::resource('discussions', DiscussionController::class);
+
+// Product Routes
 Route::resource('products', ProductController::class);
 
+// Review Routes
+Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+Route::get('/products/{product}/reviews', [ReviewController::class, 'index'])->name('reviews.index');
 
-
+// Cart Routes
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/{product}', [CartController::class, 'addToCart'])->name('cart.add');
@@ -41,3 +48,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::patch('/cart/update/{cartItem}', [CartController::class, 'updateQuantity'])->name('cart.update');
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
 });
+
+// Redirect Non-Admin Users to Landing Page After Login
+Route::get('/redirect-user', function () {
+    if (Auth::check() && !Auth::user()->is_admin) {
+        return redirect()->route('landing');
+    }
+    return redirect()->route('home');
+})->middleware('auth');

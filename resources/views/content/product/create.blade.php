@@ -37,6 +37,14 @@
                             <small class="invalid-feedback" role="alert">{{ $message }}</small>
                             @enderror
                         </div>
+
+                        <label for="ingredients" class="required form-label" style="color: #62717D">Ingredients</label>
+                        <div class="input-group mb-5">
+                            <textarea type="text" name="ingredients" id="ingredients" rows="4" class="border-hover-success form-control @error('ingredients') is-invalid @enderror" value="{{ old('ingredients', $data->ingredients) }}" placeholder="Ingredients" required></textarea>
+                            @error('ingredients')
+                            <small class="invalid-feedback" role="alert">{{ $message }}</small>
+                            @enderror
+                        </div>
                     </div>
                 </div>
             </div>
