@@ -6,7 +6,7 @@
     <!-- Google Tag Manager -->
     <!-- End Google Tag Manager -->
     <meta charset="utf-8" />
-    <title>Mader Baker</title>
+    <title>Rimberio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <!--begin::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
@@ -162,7 +162,7 @@
                         <!--begin::Copyright-->
                         <div class="text-dark order-2 order-md-1">
                             <span class="text-muted font-weight-bold mr-2">© <?= date('Y'); ?></span>
-                            <a href="#" class="text-dark-75 text-hover-primary">Mader Baker</a>
+                            <a href="#" class="text-dark-75 text-hover-primary">Rimberio</a>
                         </div>
                         <!--end::Copyright-->
                     </div>

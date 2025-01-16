@@ -2,109 +2,133 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use App\Models\Cart;
-use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Cart;
+use App\Models\CartItem;
+use App\Models\Product;
+use App\Models\Order;
+use App\Models\OrderItem;
 
 class CartController extends Controller
 {
-    // Menampilkan halaman keranjang belanja
+
     public function index()
     {
         $cart = $this->getOrCreateCart();
-        $cartItems = $cart->cartItems;
-        $total = $cartItems->sum(function ($item) {
-            return $item->product->price * $item->quantity;
-        });
 
-        return view('cart', compact('cartItems', 'total'));
+        return view('cart.index', [
+            'cartItems' => $cart->cartItems,
+            'total' => $cart->cartItems->sum(function ($item) {
+                return $item->product->price * $item->quantity;
+            }),
+        ]);
     }
 
-    // Menambahkan produk ke keranjang
-    public function addToCart(Request $request, $productId)
+
+    public function addToCart(Request $request)
     {
         $request->validate([
+            'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
         ]);
 
         $cart = $this->getOrCreateCart();
-        $product = Product::findOrFail($productId);
-        $this->addOrUpdateCartItem($cart, $product, $request->input('quantity'));
+        $product = Product::findOrFail($request->product_id);
+
+        // Periksa apakah produk sudah ada di keranjang
+        $cartItem = $cart->cartItems()->where('product_id', $product->id)->first();
+
+        if ($cartItem) {
+            // Update jumlah jika sudah ada
+            $cartItem->update([
+                'quantity' => $cartItem->quantity + $request->quantity,
+            ]);
+        } else {
+            // Tambahkan item baru
+            $cart->cartItems()->create([
+                'product_id' => $product->id,
+                'quantity' => $request->quantity,
+                'price' => $product->price,
+            ]);
+        }
 
         return redirect()->route('cart.index')->with('success', 'Produk berhasil ditambahkan ke keranjang.');
     }
 
-    // Memperbarui kuantitas produk di keranjang
-    public function updateQuantity(Request $request, $cartItemId)
+    public function updateCartItem(Request $request, $cartItemId)
     {
         $request->validate([
             'quantity' => 'required|integer|min:1',
         ]);
 
         $cartItem = CartItem::findOrFail($cartItemId);
-        $cartItem->update(['quantity' => $request->input('quantity')]);
 
-        return redirect()->route('cart.index')->with('success', 'Kuantitas produk berhasil diperbarui.');
+        // Pastikan item ini milik pengguna saat ini
+        if ($cartItem->cart->user_id !== Auth::id()) {
+            return abort(403, 'Unauthorized action.');
+        }
+
+        $cartItem->update([
+            'quantity' => $request->quantity,
+        ]);
+
+        return redirect()->route('cart.index')->with('success', 'Jumlah item berhasil diperbarui.');
     }
 
-    // Menghapus produk dari keranjang
-    public function removeFromCart($cartItemId)
+
+    public function removeCartItem($cartItemId)
     {
         $cartItem = CartItem::findOrFail($cartItemId);
+
+        // Pastikan item ini milik pengguna saat ini
+        if ($cartItem->cart->user_id !== Auth::id()) {
+            return abort(403, 'Unauthorized action.');
+        }
+
         $cartItem->delete();
 
-        return redirect()->route('cart.index')->with('success', 'Produk berhasil dihapus dari keranjang.');
+        return redirect()->route('cart.index')->with('success', 'Item berhasil dihapus dari keranjang.');
     }
 
-    // Mendapatkan atau membuat keranjang baru untuk pengguna saat ini
-    private function getOrCreateCart()
-    {
-        return Auth::user()->cart ?: Cart::create(['user_id' => Auth::id()]);
-    }
-
-    // Menambahkan atau memperbarui item keranjang
-    private function addOrUpdateCartItem($cart, $product, $quantity)
-    {
-        $cartItem = $cart->cartItems()->where('product_id', $product->id)->first();
-
-        if ($cartItem) {
-            $cartItem->increment('quantity', $quantity);
-        } else {
-            $cart->cartItems()->create([
-                'product_id' => $product->id,
-                'quantity' => $quantity,
-            ]);
-        }
-    }
 
     public function checkout()
     {
         $cart = $this->getOrCreateCart();
         $cartItems = $cart->cartItems;
+
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Keranjang belanja kosong.');
+        }
+
         $total = $cartItems->sum(function ($item) {
             return $item->product->price * $item->quantity;
         });
 
-        // Buat pesan untuk dikirim melalui WhatsApp
-        $message = "Halo, saya ingin memesan kue ini apakah masih tersedia?\n";
-        $message .= "Nama: \n";
-        $message .= "Alamat: " . "\n";
-        $message .= "No Hp: " . "\n";
-        $message .= "Tanggal Pengiriman: " . "\n";
+        $order = Order::create([
+            'user_id' => Auth::id(),
+            'total' => $total,
+            'status' => 'pending',
+        ]);
+
         foreach ($cartItems as $item) {
-            $message .= "Nama Produk: {$item->product->name} - Qty: {$item->quantity}, Harga: Rp " . number_format($item->product->price * $item->quantity, 0, ',', '.') . "\n";
+            $order->items()->create([
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+                'price' => $item->product->price,
+            ]);
         }
-        $message .= "Total: Rp " . number_format($total, 0, ',', '.') . "\n";
 
-        // Encode pesan untuk URL
-        $message = urlencode($message);
+        // Kosongkan keranjang
+        $cart->cartItems()->delete();
 
-        // Gantilah 'phone_number' dengan nomor WhatsApp Anda
-        $whatsappLink = "https://wa.me/628111168364?text=$message";
+        return redirect()->route('orders.index')->with('success', 'Pesanan berhasil dibuat.');
+    }
 
-        // Redirect ke link WhatsApp
-        return redirect($whatsappLink);
+
+    private function getOrCreateCart()
+    {
+        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
+        return $cart;
     }
 }

@@ -145,7 +145,7 @@
                         <a class="nav-link" href="#price">Price List</a>
                     </li>
                     <li class="nav-item font-size-h5">
-                        <a class="nav-link" href="#product">Product</a>
+                        <a class="nav-link" href="{{ route('cart.index') }}">Keranjang Saya</a>
                     </li>
                     <li class="nav-item font-size-h5">
                         <a class="nav-link" href="{{ route('orders.index') }}">Pesanan Saya</a>
