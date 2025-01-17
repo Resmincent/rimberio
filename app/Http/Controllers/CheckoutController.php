@@ -118,7 +118,7 @@ class CheckoutController extends Controller
             try {
                 $order = Order::create([
                     'user_id' => Auth::id(),
-                    'order_id' => $orderId, // Ensure this is set correctly
+                    'order_id' => $orderId,
                     'total_amount' => $total,
                     'status' => 'pending',
                     'customer_name' => Auth::user()->name,
