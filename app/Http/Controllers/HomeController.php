@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\User;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +29,8 @@ class HomeController extends Controller
     {
         $user = User::count();
         $product = Product::count();
+        $category = Category::count();
 
-        return view('content.view_dashboard', compact('user', 'product'));
+        return view('content.view_dashboard', compact('user', 'product', 'category'));
     }
 }

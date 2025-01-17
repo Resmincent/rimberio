@@ -19,7 +19,6 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Email</th>
-                                    <th>Level</th>
                                     <th>Role</th>
                                     <th style="width:90px;">Action</th>
                                 </tr>
@@ -29,7 +28,6 @@
                                 <tr>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
-                                    <td>{{ $user->level }}</td>
                                     <td>{{ $user->is_admin ? 'Admin' : 'User' }}</td>
                                     <td>
                                         <!--begin::Menu-->

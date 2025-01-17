@@ -86,7 +86,22 @@
                                     <span class="menu-text">Product</span>
                                     <span class="menu-label">
                                     </span>
-
+                                </a>
+                                <a href="{{ route('categories.index') }}" class="menu-link menu-toggle">
+                                    <i class="menu-bullet menu-bullet-line">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">Category</span>
+                                    <span class="menu-label">
+                                    </span>
+                                </a>
+                                <a href="{{ route('orders.index') }}" class="menu-link menu-toggle">
+                                    <i class="menu-bullet menu-bullet-line">
+                                        <span></span>
+                                    </i>
+                                    <span class="menu-text">Order</span>
+                                    <span class="menu-label">
+                                    </span>
                                 </a>
                             </li>
 

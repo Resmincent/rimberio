@@ -8,6 +8,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -36,9 +38,8 @@ Route::resource('users', UsersController::class);
 // Product Routes
 Route::resource('products', ProductController::class);
 
-// Review Routes
-Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-Route::get('/products/{product}/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+Route::resource('categories', CategoryController::class);
+
 
 // Cart Routes
 Route::group(['middleware' => 'auth'], function () {
@@ -47,15 +48,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/cart/{cartItem}', [CartController::class, 'updateCart'])->name('cart.update');
     Route::delete('/cart/{cartItem}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::patch('/cart/update/{cartItem}', [CartController::class, 'updateQuantity'])->name('cart.update');
-    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+
+    Route::resource('orders', OrderController::class);
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+    Route::post('/payments/webhook', [CheckoutController::class, 'webhook'])->name('payments.webhook');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
-    Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
-});
+
 
 // Redirect Non-Admin Users to Landing Page After Login
 Route::get('/redirect-user', function () {

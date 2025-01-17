@@ -3,95 +3,66 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('orderItems.product')
-            ->when(!auth()->user()->is_admin, function ($query) {
-                $query->where('user_id', auth()->id());
-            })
-            ->latest()
-            ->get();
+        // Cek apakah user adalah admin
+        if (Auth::user()->is_admin) {  // Pastikan kolom is_admin ada di tabel users
+            // Query untuk admin - mengambil semua order
+            $query = Order::with(['orderItems.product'])
+                ->latest();
 
-        $view = auth()->user()->is_admin ? 'content.order.index' : 'checkout';
-
-        return view($view, compact('orders'));
-    }
-
-    public function store(Request $request)
-    {
-        $cartItems = $request->input('cart');
-        $total = 0;
-
-        foreach ($cartItems as $item) {
-            $product = Product::find($item['product_id']);
-            if ($product) {
-                $total += $product->price * $item['quantity'];
-            }
-        }
-
-        DB::beginTransaction();
-        try {
-            $order = Order::create([
-                'user_id' => Auth::id(),
-                'total' => $total,
-                'status' => 'pending',
-            ]);
-
-            foreach ($cartItems as $item) {
-                $product = Product::find($item['product_id']);
-                if ($product) {
-                    OrderItem::create([
-                        'order_id' => $order->id,
-                        'product_id' => $product->id,
-                        'quantity' => $item['quantity'],
-                        'price' => $product->price,
-                    ]);
-                }
+            // Filter berdasarkan status jika ada
+            if ($request->has('status')) {
+                $query->where('status', $request->status);
             }
 
-            DB::commit();
+            $orders = $query->paginate(10);
 
-            return redirect()->route('orders.index')->with('success', 'Pesanan berhasil dibuat.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Terjadi kesalahan saat membuat pesanan.');
+            // Return view admin
+            return view('admin.orders.index', compact('orders'));
+        } else {
+            // Query untuk user biasa - hanya mengambil order miliknya
+            $status = $request->get('status', 'all');
+
+            $query = Order::where('user_id', Auth::id())
+                ->with(['orderItems.product'])
+                ->latest();
+
+            // Filter berdasarkan status
+            if ($status !== 'all') {
+                $query->where('status', $status);
+            }
+
+            $orders = $query->paginate(10);
+
+            // Hitung jumlah order per status untuk badge di tabs
+            $statusCounts = Order::where('user_id', Auth::id())
+                ->selectRaw('status, count(*) as total')
+                ->groupBy('status')
+                ->pluck('total', 'status')
+                ->toArray();
+
+            // Return view user
+            return view('orders.index', compact('orders', 'status', 'statusCounts'));
         }
     }
 
-
-    public function show($id)
+    public function destroy($id)
     {
-        $order = Order::with('orderItems.product')->findOrFail($id);
-
-        if ($order->user_id !== Auth::id()) {
-            abort(403, 'Anda tidak memiliki akses ke pesanan ini.');
+        // Pastikan hanya admin yang bisa menghapus order
+        if (!Auth::user()->is_admin) {
+            return redirect()->back()->with('error', 'Unauthorized action.');
         }
 
-        return view('content.order.show', compact('order'));
-    }
-
-
-    public function updateStatus(Request $request, $id)
-    {
         $order = Order::findOrFail($id);
+        $order->delete();
 
-        // Validasi input status
-        $request->validate([
-            'status' => 'required|in:pending,processed,shipped,completed,canceled',
-        ]);
-
-        $order->status = $request->status;
-        $order->save();
-
-        return back()->with('success', 'Status pesanan berhasil diperbarui.');
+        return redirect()->route('orders.index')
+            ->with('success', 'Order berhasil dihapus.');
     }
 }
