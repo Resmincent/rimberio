@@ -26,7 +26,7 @@
     <link href="{{asset('metch')}}/css/themes/layout/header/menu/lightf552.css?v=7.1.8" rel="stylesheet" type="text/css" />
     <link href="{{asset('metch')}}/css/themes/layout/brand/darkf552.css?v=7.1.8" rel="stylesheet" type="text/css" />
     <link href="{{asset('metch')}}/css/themes/layout/aside/darkf552.css?v=7.1.8" rel="stylesheet" type="text/css" />
-    <link rel="shortcut icon" href="{{ asset('metch/media/logos/image.png') }}" />
+    <link rel="shortcut icon" href="{{ asset('metch/media/logos/rimberio.png') }}" />
 
     <!--end::Layout Themes-->
     <!-- Hotjar Tracking Code for keenthemes.com -->
@@ -96,14 +96,9 @@
     <div class="d-flex flex-column flex-root">
         <!--begin::Login-->
         <div class="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login">
-            <div class="d-flex flex-center bgi-size-cover flex-row-fluid" style="background-image: url({{asset('metch')}}/media/bg/icon.jpeg);">
+            <div class="d-flex flex-center bgi-size-cover flex-row-fluid" style="background-image: url({{asset('metch')}}/media/bg/bg-1.jpg);">
                 <div class="login-form text-center text-white position-relative overflow-hidden">
                     <!--begin::Login Header-->
-                    <div class="d-flex flex-center">
-                        <a href="#">
-                            <img src="{{asset('metch')}}/media/bg/icon.jpeg" class="max-h-200px image-input-circle" alt="" />
-                        </a>
-                    </div>
                     <!--end::Login Header-->
                     @yield('auth')
 

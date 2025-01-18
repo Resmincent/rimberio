@@ -20,10 +20,11 @@ class LandingPageController extends Controller
             $searchTerm = $request->input('search');
             $query->where('name', 'like', "%{$searchTerm}%");
         }
-        $products = $query->latest()->take(10)->get();
+        $products = $query->paginate(9);
 
+        $makanan = Product::where('category_id', 1)->get();
+        $minuman = Product::where('category_id', 2)->get();
 
-
-        return view('landing_page', compact('products'));
+        return view('landing_page', compact('products', 'makanan', 'minuman'));
     }
 }

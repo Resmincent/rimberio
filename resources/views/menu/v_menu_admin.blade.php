@@ -3,7 +3,7 @@
     <div class="brand flex-column-auto" id="kt_brand">
         <!--begin::Logo-->
         <a href="#" class="brand-logo">
-            <img alt="Logo" class="border" src="{{asset('metch/media/bg/icon.jpeg')}}" style="width: 40px; height: 40px; border-radius:8px" />
+            <img alt="Logo" class="border" src="{{asset('metch/media/bg/rimberio.png')}}" style="width: 40px; height: 40px; border-radius:8px" />
         </a>
         <!--end::Logo-->
         <!--begin::Toggle-->

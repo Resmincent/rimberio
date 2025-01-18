@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+
 
 
 class ProductController extends Controller
@@ -28,26 +31,33 @@ class ProductController extends Controller
     public function create()
     {
         $data = new Product();
-        return view('content.product.create', compact('data'));
+        $categories = Category::all();
+        return view('content.product.create', compact('data', 'categories'));
     }
 
     public function store(Request $request)
     {
+
+
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'description' => 'required',
             'ingredients' => 'required',
             'price' => 'required|numeric|min:0',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_id' => 'required|exists:categories,id'
+
         ]);
 
-        // Jika ada gambar yang diunggah, simpan gambar dan masukkan path-nya ke dalam $validatedData
+
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
             $validatedData['image'] = $imagePath;
         }
 
         Product::create($validatedData);
+
+
         return redirect()->route('products.index')->with('success', 'Product berhasil di tambahkan');
     }
 
@@ -64,6 +74,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'ingredients' => 'required',
+            'category_id' => 'required|exists:categories,id'
 
         ]);
 

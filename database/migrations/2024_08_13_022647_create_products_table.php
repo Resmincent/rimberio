@@ -20,6 +20,7 @@ class CreateProductsTable extends Migration
             $table->text('ingredients');
             $table->decimal('price', 10, 2);
             $table->string('image')->nullable();
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->timestamps();
         });
     }

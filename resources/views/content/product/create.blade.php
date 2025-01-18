@@ -30,9 +30,23 @@
                             <span class="input-group-text">.00</span>
                         </div>
 
-                        <label for="description" class="required form-label" style="color: #62717D">Description</label>
+                        <label for="category" class="required form-label" style="color: #62717D">Category</label>
                         <div class="input-group mb-5">
-                            <textarea type="text" name="description" id="description" rows="4" class="border-hover-success form-control @error('description') is-invalid @enderror" value="{{ old('description', $data->description) }}" placeholder="Description" required></textarea>
+                            <select name="category_id" id="category_id" class="border-hover-success form-control @error('category_id') is-invalid @enderror" required>
+                                <option value="">Select Category</option>
+                                @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id', $data->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+
+                            @error('category_id')
+                            <small class="invalid-feedback" role="alert">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <label for="exampleFormControlTextarea1" class="form-label">Deskripsi</label>
+                        <div class="input-group mb-5">
+                            <textarea class="form-control editor @error('description') is-invalid @enderror" name="description" id="exampleFormControlTextarea1" rows="5">{{ old('description') }}</textarea>
                             @error('description')
                             <small class="invalid-feedback" role="alert">{{ $message }}</small>
                             @enderror
@@ -40,7 +54,7 @@
 
                         <label for="ingredients" class="required form-label" style="color: #62717D">Ingredients</label>
                         <div class="input-group mb-5">
-                            <textarea type="text" name="ingredients" id="ingredients" rows="4" class="border-hover-success form-control @error('ingredients') is-invalid @enderror" value="{{ old('ingredients', $data->ingredients) }}" placeholder="Ingredients" required></textarea>
+                            <textarea class="form-control editor2 @error('ingredients') is-invalid @enderror" name="ingredients" id="ingredients" rows="5">{{ old('ingredients') }}</textarea>
                             @error('ingredients')
                             <small class="invalid-feedback" role="alert">{{ $message }}</small>
                             @enderror
@@ -58,7 +72,32 @@
             </div>
         </div>
     </div>
-
 </form>
+
+
+<script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor.create(document.querySelector('.editor'))
+        .catch(error => {
+            console.error(error);
+        });
+
+    document.getElementById('color').addEventListener('input', function(e) {
+        document.getElementById('colorPreview').style.backgroundColor = e.target.value;
+    });
+
+</script>
+
+<script>
+    ClassicEditor.create(document.querySelector('.editor2'))
+        .catch(error => {
+            console.error(error);
+        });
+
+    document.getElementById('color').addEventListener('input', function(e) {
+        document.getElementById('colorPreview').style.backgroundColor = e.target.value;
+    });
+
+</script>
 
 @endsection

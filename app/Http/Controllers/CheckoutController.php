@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
-    public function process(Request $request)
+    public function process()
     {
         try {
             // 1. Validasi cart
@@ -45,7 +45,7 @@ class CheckoutController extends Controller
                     'id' => $item->product->id,
                     'price' => (int) $item->product->price,
                     'quantity' => $item->quantity,
-                    'name' => substr($item->product->name, 0, 50) // Batasi nama item max 50 karakter
+                    'name' => substr($item->product->name, 0, 50)
                 ];
             }
 
@@ -73,7 +73,8 @@ class CheckoutController extends Controller
                     'bri_va'
                 ],
                 'callbacks' => [
-                    'finish' => route('orders.index'),
+                    'finish' => route('orders.index', ['status' => 'paid']),
+                    'error' => route('orders.index', ['status' => 'cancelled']),
                 ]
             ];
 
@@ -120,7 +121,7 @@ class CheckoutController extends Controller
                     'user_id' => Auth::id(),
                     'order_id' => $orderId,
                     'total_amount' => $total,
-                    'status' => 'pending',
+                    'status' => 'paid',
                     'customer_name' => Auth::user()->name,
                     'customer_email' => Auth::user()->email,
                 ]);
@@ -167,44 +168,108 @@ class CheckoutController extends Controller
 
     public function webhook(Request $request)
     {
-        $payload = $request->all();
-        $orderId = $payload['order_id'];
+        try {
+            $payload = $request->all();
 
-        // Verifikasi signature key
-        $signatureKey = $payload['signature_key'];
-        $expectedSignature = hash(
-            'sha512',
-            $orderId .
-                $payload['status_code'] .
-                $payload['gross_amount'] .
-                env('MIDTRANS_SERVER_KEY')
-        );
+            Log::info('Midtrans Webhook Payload:', $payload);
 
-        if ($signatureKey !== $expectedSignature) {
-            return response()->json(['message' => 'Invalid signature'], 400);
+            $orderId = $payload['order_id'];
+            $transactionStatus = $payload['transaction_status'];
+            $fraudStatus = $payload['fraud_status'] ?? null;
+
+            // Verify signature key
+            $signatureKey = $payload['signature_key'];
+            $expectedSignature = hash(
+                'sha512',
+                $orderId .
+                    $payload['status_code'] .
+                    $payload['gross_amount'] .
+                    config('midtrans.server_key')
+            );
+
+            if ($signatureKey !== $expectedSignature) {
+                Log::error('Invalid Midtrans signature', [
+                    'received' => $signatureKey,
+                    'expected' => $expectedSignature
+                ]);
+                return response()->json(['message' => 'Invalid signature'], 400);
+            }
+
+            DB::beginTransaction();
+            try {
+                $order = Order::where('order_id', $orderId)->lockForUpdate()->firstOrFail();
+
+                Log::info('Processing order status update', [
+                    'order_id' => $orderId,
+                    'current_status' => $order->status,
+                    'new_transaction_status' => $transactionStatus,
+                    'fraud_status' => $fraudStatus
+                ]);
+
+                // Update order status based on transaction_status
+                switch ($transactionStatus) {
+                    case 'capture':
+                        // For credit card transaction
+                        if ($fraudStatus == 'accept') {
+                            $order->status = 'paid';
+                        } else {
+                            $order->status = 'cancelled';
+                        }
+                        break;
+                    case 'settlement':
+                        $order->status = 'paid';
+                        break;
+                    case 'deny':
+                    case 'cancel':
+                    case 'expire':
+                        $order->status = 'cancelled';
+                        break;
+                    case 'refund':
+                        $order->status = 'cancelled';
+                        break;
+                    default:
+                        $order->status = 'paid';
+                        break;
+                }
+
+                // Add payment details to order
+                $order->payment_type = $payload['payment_type'] ?? null;
+                $order->transaction_id = $payload['transaction_id'] ?? null;
+                $order->payment_time = $payload['transaction_time'] ?? null;
+                $order->last_updated_at = now();
+
+                $order->save();
+
+                Log::info('Order status updated successfully', [
+                    'order_id' => $orderId,
+                    'new_status' => $order->status
+                ]);
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Webhook processed successfully'
+                ]);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Error processing webhook', [
+                    'order_id' => $orderId,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                throw $e;
+            }
+        } catch (\Exception $e) {
+            Log::error('Webhook processing failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Webhook processing failed'
+            ], 500);
         }
-
-        $order = Order::where('order_id', $orderId)->firstOrFail();
-
-        // Update status order berdasarkan transaction_status dari Midtrans
-        switch ($payload['transaction_status']) {
-            case 'capture':
-            case 'settlement':
-                $order->status = 'paid';
-                break;
-            case 'deny':
-                $order->status = 'denied';
-                break;
-            case 'expire':
-                $order->status = 'expired';
-                break;
-            case 'cancel':
-                $order->status = 'cancelled';
-                break;
-        }
-
-        $order->save();
-
-        return response()->json(['message' => 'Webhook handled successfully']);
     }
 }

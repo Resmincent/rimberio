@@ -8,6 +8,38 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
+        .navbar {
+            background-color: #343a40;
+        }
+
+        .navbar-brand img {
+            border-radius: 50%;
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #fff !important;
+        }
+
+        .navbar-nav .nav-link {
+            margin-right: 1rem;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #e00000 !important;
+        }
+
+        .btn-primary {
+            background-color: #e00000;
+            border-color: #e00000;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #e00000;
+            border-color: #e00000;
+        }
+
         .cart-item {
             transition: all 0.3s ease;
             border-radius: 10px;
@@ -98,7 +130,38 @@
     </div>
 
     <!-- Navbar -->
-    {{-- @include('layouts.navbar') --}}
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ route('landing') }}">
+                <img src="{{ asset('metch/media/bg/rimberio.png') }}" alt="Rimberio Logo" width="40" height="40">
+                Rimberio
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto justify-content-end d-flex">
+                    <li class="nav-item active font-size-h5">
+                        <a class="nav-link" href="{{ route('landing') }}" id="nav-home">Home</a>
+                    </li>
+                    <li class="nav-item font-size-h5">
+                        <a class="nav-link" href="#price" id="nav-price">Price List</a>
+                    </li>
+                    <li class="nav-item font-size-h5">
+                        <a class="nav-link" href="#product" id="nav-product">Product</a>
+                    </li>
+                    <li class="nav-item font-size-h5">
+                        <a class="nav-link" href="{{ route('orders.index') }}">Pesanan Saya</a>
+                    </li>
+                    <li class="nav-item font-size-h5 p-1">
+                        <a class="nav-link btn-info text-white" href="{{ route('cart.index') }}" style="border-radius: 6px">
+                            <i class="fa fa-shopping-cart"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <div class="container my-5">
         <h2 class="mb-4">Shopping Cart</h2>
@@ -117,7 +180,7 @@
             <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
             <h4>Your cart is empty</h4>
             <p class="text-muted">Looks like you haven't added anything to your cart yet.</p>
-            <a href="{{ route('products.index') }}" class="btn btn-primary mt-3">
+            <a href="{{ route('landing') }}" class="btn btn-primary mt-3">
                 <i class="fas fa-shopping-bag mr-2"></i>Continue Shopping
             </a>
         </div>
@@ -190,7 +253,7 @@
                         <i class="fas fa-lock mr-2"></i>Proceed to Payment
                     </button>
 
-                    <a href="{{ route('products.index') }}" class="btn btn-outline-primary btn-block">
+                    <a href="{{ route('landing') }}" class="btn btn-outline-primary btn-block">
                         <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
                     </a>
                 </div>
@@ -204,6 +267,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}">
     </script>
+
+    <script>
+        document.getElementById('nav-home').addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = "{{ route('landing') }}";
+        });
+
+        document.getElementById('nav-product').addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = "{{ route('landing') }}#product";
+        });
+
+        document.getElementById('nav-price').addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = "{{ route('landing') }}#price";
+        });
+
+    </script>
+
     <script>
         // Show loading indicator
         function showLoading() {
@@ -216,6 +298,7 @@
         }
 
         // Handle payment button click
+        // In your shopping cart view
         document.getElementById('pay-button').addEventListener('click', function(e) {
             e.preventDefault();
             showLoading();
@@ -228,8 +311,7 @@
                         , 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                     , credentials: 'same-origin'
-
-                , })
+                })
                 .then(response => response.json())
                 .then(data => {
                     hideLoading();
@@ -238,17 +320,23 @@
                         window.snap.pay(data.snap_token, {
                             onSuccess: function(result) {
                                 showLoading();
-                                window.location.href = '{{ route("orders.index") }}';
+                                // Redirect to orders page after successful payment
+                                window.location.href = '{{ route("orders.index", ["status" => "paid"]) }}';
                             }
                             , onPending: function(result) {
                                 showLoading();
-                                window.location.href = '{{ route("orders.index") }}';
+                                // Redirect to orders page with pending status
+                                window.location.href = '{{ route("orders.index", ["status" => "pending"]) }}';
                             }
                             , onError: function(result) {
                                 alert('Payment failed! Please try again.');
+                                // Redirect to orders page with failed status
+                                window.location.href = '{{ route("orders.index", ["status" => "failed"]) }}';
                             }
                             , onClose: function() {
                                 alert('You closed the payment window. Your order is still pending.');
+                                // Redirect to orders page with pending status
+                                window.location.href = '{{ route("orders.index", ["status" => "pending"]) }}';
                             }
                         });
                     } else {
@@ -260,12 +348,6 @@
                     console.error('Error:', error);
                     alert('Payment failed: ' + error.message);
                 });
-        });
-
-        // Auto-submit quantity update form when input changes
-        document.querySelectorAll('.update-quantity-form').forEach(form => {
-            const input = form.querySelector('input[name="quantity"]');
-            input.addEventListener('change', () => form.submit());
         });
 
     </script>

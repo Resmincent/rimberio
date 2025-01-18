@@ -49,9 +49,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/cart/{cartItem}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::patch('/cart/update/{cartItem}', [CartController::class, 'updateQuantity'])->name('cart.update');
 
-    Route::resource('orders', OrderController::class);
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
     Route::post('/payments/webhook', [CheckoutController::class, 'webhook'])->name('payments.webhook');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+
+    Route::middleware(['admin'])->group(function () {
+        Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
+    });
 });
 
 

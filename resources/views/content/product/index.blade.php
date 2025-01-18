@@ -31,8 +31,8 @@
                                 <tr>
                                     <td> <img src="{{ asset('storage/' . $p->image) }}" alt="peoduct Image" class="img-thumbnail" style="max-width: 80px;"></td>
                                     <td>{{$p->name}}</td>
-                                    <td>{{ \Illuminate\Support\Str::words($p->ingredients, 20) }}</td>
-                                    <td>{{ \Illuminate\Support\Str::words($p->description, 20) }}</td>
+                                    <td>{!! \Illuminate\Support\Str::words($p->ingredients, 20) !!}</td>
+                                    <td>{!! \Illuminate\Support\Str::words($p->description, 20) !!}</td>
                                     <td>{{FormatRupiah($p->price)}}</td>
                                     <td>
                                         <!--begin::Menu-->

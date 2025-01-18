@@ -40,30 +40,30 @@
         }
 
         .navbar-nav .nav-link:hover {
-            color: #d28137 !important;
+            color: #e00000 !important;
         }
 
         .btn-primary {
-            background-color: #d28137;
-            border-color: #d28137;
+            background-color: #e00000;
+            border-color: #e00000;
             transition: background-color 0.3s ease;
         }
 
         .btn-primary:hover {
-            background-color: #e5533b;
-            border-color: #e5533b;
+            background-color: #e00000;
+            border-color: #e00000;
         }
 
         #price,
         #product {
-            padding: 5rem 0;
+            padding: 2rem 0;
         }
 
         #price h2,
         #product h2 {
             margin-bottom: 2rem;
             font-weight: 600;
-            color: #d28137;
+            color: #e00000;
         }
 
         #price .card,
@@ -80,7 +80,7 @@
         }
 
         .table thead {
-            background-color: #d28137;
+            background-color: #e00000;
             color: white;
         }
 
@@ -100,7 +100,7 @@
         }
 
         footer {
-            background-color: #343a40;
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
             color: white;
             padding: 2rem 0;
         }
@@ -110,16 +110,167 @@
         }
 
         footer a {
-            color: #d28137;
+            color: #e00000;
             transition: color 0.3s ease;
         }
 
         footer a:hover {
-            color: #e5533b;
+            color: #e00000;
         }
 
         footer hr {
             border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .menu-section {
+            background-color: #f8f9fa;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #dc3545;
+        }
+
+        .divider-line {
+            height: 2px;
+            width: 50px;
+            background-color: #dc3545;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .menu-header {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .menu-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .menu-icon {
+            font-size: 24px;
+        }
+
+        .menu-items {
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px dashed #dee2e6;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item-info {
+            flex: 1;
+        }
+
+        .menu-item-title {
+            margin: 0;
+            color: #343a40;
+            font-weight: 600;
+        }
+
+        .menu-item-desc {
+            margin: 5px 0 0;
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .menu-item-price {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .price {
+            font-weight: 600;
+            color: #dc3545;
+            font-size: 1.1rem;
+        }
+
+        .add-to-cart-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #c82333;
+            transform: scale(1.1);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            color: #dee2e6;
+        }
+
+        /* Custom Scrollbar */
+        .menu-items::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .menu-items::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .menu-items::-webkit-scrollbar-thumb {
+            background: #dc3545;
+            border-radius: 10px;
+        }
+
+        .menu-items::-webkit-scrollbar-thumb:hover {
+            background: #c82333;
+        }
+
+        @media (max-width: 768px) {
+            .menu-card {
+                margin-bottom: 30px;
+            }
+
+            .menu-items {
+                max-height: 400px;
+            }
         }
 
     </style>
@@ -130,7 +281,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="{{ route('landing') }}">
-                <img src="{{ asset('metch/media/bg/icon.jpeg') }}" alt="Rimberio Logo" width="40" height="40">
+                <img src="{{ asset('metch/media/bg/rimberio.png') }}" alt="Rimberio Logo" width="40" height="40">
                 Rimberio
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -148,7 +299,7 @@
                         <a class="nav-link" href="#product">Product</a>
                     </li>
                     <li class="nav-item font-size-h5">
-                        <a class="nav-link" href="{{ route('orders.index') }}">Pesanan Saya</a>
+                        <a class="nav-link" href="{{ route('orders.index') }}">My Order</a>
                     </li>
                     <li class="nav-item font-size-h5 p-1">
                         <a class="nav-link btn-info text-white" href="{{ route('cart.index') }}" style="border-radius: 6px">
@@ -175,38 +326,82 @@
     </nav>
 
     <!-- Price List Section -->
-    <section id="price" class="py-5 bg-light">
+    <section id="price" class="menu-section py-5">
         <div class="container">
-            <h2 class="text-center">Price List</h2>
-            <div class="row d-flex justify-content-center">
-                <div class="col-sm-6 col-lg-4 col-md-6 p-2 d-flex justify-content-center">
-                    <div class="card p-lg-4 p-md-3 p-sm-4 mb-2 col-sm-12 mx-auto">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Name Product</th>
-                                    <th>Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($products as $p)
-                                <tr>
-                                    <td>{{ $p->name }}</td>
-                                    <td>{{ formatRupiah($p->price) }}</td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="2">Product Tidak Tersedia.</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+            <div class="text-center mb-5">
+                <h2 class="display-4 mb-3">Our Menu</h2>
+                <div class="divider">
+                    <span class="divider-line"></span>
+                    <i class="fas fa-utensils mx-3"></i>
+                    <span class="divider-line"></span>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <!-- Food Menu Card -->
+                <div class="col-lg-5 col-md-6 mb-4">
+                    <div class="menu-card">
+                        <div class="menu-header">
+                            <div class="menu-title">
+                                <i class="fas fa-hamburger menu-icon"></i>
+                                <h3>Makanan</h3>
+                            </div>
+                        </div>
+
+                        <div class="menu-items">
+                            @forelse ($makanan as $p)
+                            <div class="menu-item">
+                                <div class="menu-item-info">
+                                    <h5 class="menu-item-title">{{ $p->name }}</h5>
+
+                                </div>
+                                <div class="menu-item-price">
+                                    <span class="price">{{ formatRupiah($p->price) }}</span>
+
+                                </div>
+                            </div>
+                            @empty
+                            <div class="text-center py-4">
+                                <i class="fas fa-cookie-bite empty-icon"></i>
+                                <p class="mt-3">No food items available at the moment.</p>
+                            </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beverages Menu Card -->
+                <div class="col-lg-5 col-md-6 mb-4">
+                    <div class="menu-card">
+                        <div class="menu-header">
+                            <div class="menu-title">
+                                <i class="fas fa-glass-cheers menu-icon"></i>
+                                <h3>Minuman</h3>
+                            </div>
+                        </div>
+
+                        <div class="menu-items">
+                            @forelse ($minuman as $p)
+                            <div class="menu-item">
+                                <div class="menu-item-info">
+                                    <h5 class="menu-item-title">{{ $p->name }}</h5>
+                                </div>
+                                <div class="menu-item-price">
+                                    <span class="price">{{ formatRupiah($p->price) }}</span>
+                                </div>
+                            </div>
+                            @empty
+                            <div class="text-center py-4">
+                                <i class="fas fa-glass-whiskey empty-icon"></i>
+                                <p class="mt-3">No beverages available at the moment.</p>
+                            </div>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
 
     <!-- Product Section -->
     <section id="product" class="py-5">
@@ -216,13 +411,14 @@
                 @forelse ($products as $product)
                 <div class="col-sm-6 col-lg-4 col-md-6 mb-4 d-flex justify-content-center">
                     <div class="card p-3 mx-auto">
-                        <img id="image" src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" onerror="this.src='{{ asset('images/placeholder.jpg') }}'" class="img-thumbnail card-img-top" style="height: 300px; object-fit: cover;">
+                        <img id="image" src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" onerror="this.src='{{ asset('images/placeholder.jpg') }}'" class="img-thumbnail card-img-top" style="height: 200px; object-fit: cover;">
                         <div class="card-body text-center">
                             <h5 class="card-title font-weight-bold">{{ $product->name }}</h5>
                             <p class="card-text font-weight-light">
-                                {{ \Illuminate\Support\Str::words($product->description, 20) }}
+                                {!! \Illuminate\Support\Str::words($product->description, 20) !!}
                                 <a href="#" class="text-primary" data-toggle="modal" data-target="#descriptionModal{{ $product->id }}">Read more</a>
                             </p>
+
                             <p class="card-text font-weight-bold">{{ formatRupiah($product->price) }}</p>
                             <form action="{{ route('cart.add', $product->id) }}" method="POST">
                                 @csrf
@@ -256,12 +452,12 @@
                                 <!-- Tab panes -->
                                 <div class="tab-content mt-3">
                                     <div class="tab-pane fade show active" id="description{{ $product->id }}" role="tabpanel" aria-labelledby="description-tab{{ $product->id }}">
-                                        {{ $product->description }}
+                                        {!! $product->description !!}
                                     </div>
                                     <div class="tab-pane fade" id="ingredients{{ $product->id }}" role="tabpanel" aria-labelledby="ingredients-tab{{ $product->id }}">
                                         <ul class="list-unstyled">
                                             <li>
-                                                <i class="fas fa-check-circle"></i> {{ $product->ingredients }}
+                                                <i class="fas fa-check-circle"></i> {!! $product->ingredients !!}
                                             </li>
                                         </ul>
                                     </div>
@@ -276,6 +472,13 @@
                 </div>
                 @endforelse
             </div>
+
+            <!-- Pagination Links -->
+            <div class="row">
+                <div class="col-12 text-center">
+                    {{ $products->links() }}
+                </div>
+            </div>
         </div>
     </section>
 
@@ -286,7 +489,7 @@
 
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4">
+    <footer class="text-light py-4">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">

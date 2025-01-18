@@ -25,6 +25,7 @@
                             @enderror
                         </div>
 
+
                         <label for="price" class="required form-label" style="color: #62717D">Price</label>
                         <div class="input-group mb-3">
                             <span class="input-group-text">IDR</span>
@@ -33,6 +34,20 @@
                             <small class="invalid-feedback" role="alert">{{ $message }}</small>
                             @enderror
                             <span class="input-group-text">.00</span>
+                        </div>
+
+                        <label for="category" class="required form-label" style="color: #62717D">Category</label>
+                        <div class="input-group mb-5">
+                            <select name="category" id="category" class="border-hover-success form-control @error('category') is-invalid @enderror">
+                                @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category', $product->category_id) == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('category')
+                            <small class="invalid-feedback" role="alert">{{ $message }}</small>
+                            @enderror
                         </div>
 
                         <label for="description" class="required form-label" style="color: #62717D">Description</label>
