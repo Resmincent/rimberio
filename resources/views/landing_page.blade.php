@@ -263,6 +263,14 @@
             background: #c82333;
         }
 
+        .btn-custom {
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            max-width: 150px;
+            text-align: center;
+        }
+
         @media (max-width: 768px) {
             .menu-card {
                 margin-bottom: 30px;
@@ -270,6 +278,12 @@
 
             .menu-items {
                 max-height: 400px;
+            }
+
+            .btn-custom {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+                max-width: 120px;
             }
         }
 
@@ -302,17 +316,17 @@
                         <a class="nav-link" href="{{ route('orders.index') }}">My Order</a>
                     </li>
                     <li class="nav-item font-size-h5 p-1">
-                        <a class="nav-link btn-info text-white" href="{{ route('cart.index') }}" style="border-radius: 6px">
+                        <a class="nav-link btn-info text-white btn-custom" href="{{ route('cart.index') }}">
                             <i class="fa fa-shopping-cart"></i>
                         </a>
                     </li>
                     @if (!Auth::user())
                     <li class="nav-item font-size-h5 p-1">
-                        <a class="nav-link btn-primary text-white" href="{{ route('login') }}" style="border-radius: 12px;">Login</a>
+                        <a class="nav-link btn-primary text-white btn-custom" href="{{ route('login') }}">Login</a>
                     </li>
                     @else
                     <li class="nav-item font-size-h5 p-1">
-                        <a class="nav-link btn-primary text-white" href="{{ route('logout') }}" style="border-radius: 12px;" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <a class="nav-link btn-primary text-white btn-custom" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             Logout
                         </a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -320,6 +334,7 @@
                         </form>
                     </li>
                     @endif
+
                 </ul>
             </div>
         </div>
@@ -411,7 +426,7 @@
                 @forelse ($products as $product)
                 <div class="col-sm-6 col-lg-4 col-md-6 mb-4 d-flex justify-content-center">
                     <div class="card p-3 mx-auto">
-                        <img id="image" src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" onerror="this.src='{{ asset('images/placeholder.jpg') }}'" class="img-thumbnail card-img-top" style="height: 200px; object-fit: cover;">
+                        <img id="image" src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-thumbnail card-img-top" style="height: 200px; object-fit: cover;">
                         <div class="card-body text-center">
                             <h5 class="card-title font-weight-bold">{{ $product->name }}</h5>
                             <p class="card-text font-weight-light">

@@ -8,42 +8,52 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
+        /* Base styles */
+        :root {
+            --primary-color: #e00000;
+            --dark-bg: #343a40;
+            --border-radius: 8px;
+        }
+
+        /* Responsive typography */
+        html {
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            html {
+                font-size: 14px;
+            }
+        }
+
+        /* Navbar styles */
         .navbar {
-            background-color: #343a40;
+            background-color: var(--dark-bg);
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .navbar-brand img {
             border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
         }
 
-        .navbar-brand,
-        .navbar-nav .nav-link {
-            color: #fff !important;
+        .navbar-nav {
+            gap: 0.5rem;
         }
 
-        .navbar-nav .nav-link {
-            margin-right: 1rem;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #e00000 !important;
-        }
-
-        .btn-primary {
-            background-color: #e00000;
-            border-color: #e00000;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background-color: #e00000;
-            border-color: #e00000;
-        }
-
+        /* Cart item styles */
         .cart-item {
-            transition: all 0.3s ease;
-            border-radius: 10px;
-            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
 
         .cart-item:hover {
@@ -56,68 +66,128 @@
             height: 100px;
             object-fit: cover;
             border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .product-price {
+            color: #666;
+        }
+
+        .quantity-controls {
+            gap: 0.5rem;
         }
 
         .quantity-input {
-            width: 80px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            padding: 5px 10px;
+            text-align: center;
+            font-weight: 500;
         }
 
+        .update-btn,
+        .delete-btn {
+            padding: 0.375rem 0.75rem;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .total-price {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Cart Summary Styles */
         .cart-summary {
             background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             position: sticky;
             top: 20px;
         }
 
-        .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+        .btn-custom {
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            max-width: 150px;
+            text-align: center;
         }
 
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .cart-item {
-                flex-direction: column;
-                text-align: center;
+        /* Responsive Adjustments */
+        @media (max-width: 576px) {
+            .cart-item .card-body {
+                padding: 1rem;
             }
 
             .product-image {
-                margin-bottom: 15px;
+                width: 80px;
+                height: 80px;
+                margin: 0 auto;
+            }
+
+            .quantity-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .update-quantity-form {
+                width: 100%;
+                max-width: 130px;
+                margin-bottom: 0.5rem;
+            }
+
+            .delete-btn {
+                width: 38px;
             }
 
             .cart-summary {
-                margin-top: 20px;
                 position: static;
+                margin-top: 1rem;
+            }
+
+            .btn-custom {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+                max-width: 120px;
+            }
+        }
+
+        @media (min-width: 577px) and (max-width: 767px) {
+            .quantity-controls {
+                justify-content: flex-start;
+            }
+        }
+
+        /* Touch Device Optimizations */
+        @media (hover: none) {
+
+            .update-btn,
+            .delete-btn {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .cart-item:hover {
+                transform: none;
+            }
+
+            .quantity-input {
+                font-size: 16px;
+                /* Prevents zoom on iOS */
+            }
+        }
+
+        /* High DPI screens */
+        @media (-webkit-min-device-pixel-ratio: 2),
+        (min-resolution: 192dpi) {
+            .product-image {
+                border: 0.5px solid rgba(0, 0, 0, 0.1);
             }
         }
 
@@ -154,7 +224,7 @@
                         <a class="nav-link" href="{{ route('orders.index') }}">Pesanan Saya</a>
                     </li>
                     <li class="nav-item font-size-h5 p-1">
-                        <a class="nav-link btn-info text-white" href="{{ route('cart.index') }}" style="border-radius: 6px">
+                        <a class="nav-link btn-info text-white btn-custom" href="{{ route('cart.index') }}" style="border-radius: 6px">
                             <i class="fa fa-shopping-cart"></i>
                         </a>
                     </li>
@@ -187,45 +257,58 @@
         @else
         <div class="row">
             <!-- Cart Items -->
-            <div class="col-lg-8">
+            <div class="col-lg-8 mb-4">
                 @foreach($cartItems as $item)
                 <div class="cart-item card mb-3">
-                    <div class="card-body d-flex align-items-center">
-                        <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product->name }}" class="product-image mr-3">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <!-- Product Image -->
+                            <div class="col-12 col-sm-3 text-center text-sm-left mb-3 mb-sm-0">
+                                <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product->name }}" class="product-image">
+                            </div>
 
-                        <div class="flex-grow-1">
-                            <h5 class="mb-2">{{ $item->product->name }}</h5>
-                            <p class="text-muted mb-2">{{ formatRupiah($item->product->price) }}</p>
+                            <!-- Product Details -->
+                            <div class="col-12 col-sm-9">
+                                <div class="row align-items-center">
+                                    <!-- Product Info -->
+                                    <div class="col-12 col-sm-7 mb-3 mb-sm-0 text-center text-sm-left">
+                                        <h5 class="product-name mb-2">{{ $item->product->name }}</h5>
+                                        <p class="product-price text-muted mb-2">{{ formatRupiah($item->product->price) }}</p>
 
-                            <div class="d-flex align-items-center">
-                                <form action="{{ route('cart.update', $item->id) }}" method="POST" class="d-inline-block update-quantity-form">
-                                    @csrf
-                                    @method('PATCH')
-                                    <div class="input-group" style="width: 130px;">
-                                        <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" class="form-control quantity-input">
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-outline-secondary">
-                                                <i class="fas fa-sync-alt"></i>
-                                            </button>
+                                        <!-- Quantity Controls -->
+                                        <div class="quantity-controls d-flex align-items-center justify-content-center justify-content-sm-start">
+                                            <form action="{{ route('cart.update', $item->id) }}" method="POST" class="update-quantity-form">
+                                                @csrf
+                                                @method('PATCH')
+                                                <div class="input-group" style="max-width: 130px;">
+                                                    <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" class="form-control quantity-input">
+                                                    <div class="input-group-append">
+                                                        <button type="submit" class="btn btn-outline-secondary update-btn">
+                                                            <i class="fas fa-sync-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                            <form action="{{ route('cart.remove', $item->id) }}" method="POST" class="ml-2">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-outline-danger delete-btn" onclick="return confirm('Are you sure you want to remove this item?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
-                                </form>
 
-                                <form action="{{ route('cart.remove', $item->id) }}" method="POST" class="d-inline-block ml-2">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to remove this item?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                    <!-- Price Summary -->
+                                    <div class="col-12 col-sm-5 text-center text-sm-right mt-3 mt-sm-0">
+                                        <h5 class="total-price mb-1">{{ formatRupiah($item->product->price * $item->quantity) }}</h5>
+                                        <small class="text-muted">
+                                            {{ $item->quantity }} x {{ formatRupiah($item->product->price) }}
+                                        </small>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="ml-auto text-right">
-                            <h5 class="mb-0">{{ formatRupiah($item->product->price * $item->quantity) }}</h5>
-                            <small class="text-muted">
-                                {{ $item->quantity }} x {{ formatRupiah($item->product->price) }}
-                            </small>
                         </div>
                     </div>
                 </div>
@@ -242,20 +325,22 @@
                         <strong>{{ formatRupiah($total) }}</strong>
                     </div>
 
-                    <hr>
+                    <hr class="my-3">
 
                     <div class="d-flex justify-content-between mb-4">
                         <span>Total</span>
                         <strong class="text-primary h5">{{ formatRupiah($total) }}</strong>
                     </div>
 
-                    <button id="pay-button" class="btn btn-success btn-block mb-3">
-                        <i class="fas fa-lock mr-2"></i>Proceed to Payment
-                    </button>
+                    <div class="cart-actions">
+                        <button id="pay-button" class="btn btn-success btn-lg btn-block mb-3">
+                            <i class="fas fa-lock mr-2"></i>Proceed to Payment
+                        </button>
 
-                    <a href="{{ route('landing') }}" class="btn btn-outline-primary btn-block">
-                        <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
-                    </a>
+                        <a href="{{ route('landing') }}" class="btn btn-outline-primary btn-block">
+                            <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

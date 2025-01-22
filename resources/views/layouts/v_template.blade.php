@@ -76,10 +76,6 @@
     <!--begin::Header Mobile-->
     <div id="kt_header_mobile" class="header-mobile align-items-center header-mobile-fixed">
         <!--begin::Logo-->
-        <a href="#">
-            <img alt="Logo" src="{{asset('metch/media/bg/rimberio.png')}}" />
-            <div class="text-white"><i class="fab fa-angrycreative fa-4x"></i></div>
-        </a>
         <!--end::Logo-->
         <!--begin::Toolbar-->
         <div class="d-flex align-items-center">

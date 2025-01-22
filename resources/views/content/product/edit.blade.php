@@ -17,6 +17,12 @@
                             <p>No image available</p>
                             @endif
                         </div>
+                        <div class="row mb-1">
+                            <div class="col-lg-6">
+                                <input type="file" name="image" class="border-hover-success form-control" id="image">
+                            </div>
+                        </div>
+
                         <label for="name" class="required form-label" style="color: #62717D">Product Name</label>
                         <div class="input-group mb-5">
                             <input type="text" class="border-hover-success form-control @error('name') is-invalid @enderror" name="name" id="name" value="{{ old('name', $product->name) }}" placeholder="Type Name Here" />
@@ -24,7 +30,6 @@
                             <small class="invalid-feedback" role="alert">{{ $message }}</small>
                             @enderror
                         </div>
-
 
                         <label for="price" class="required form-label" style="color: #62717D">Price</label>
                         <div class="input-group mb-3">
@@ -36,23 +41,24 @@
                             <span class="input-group-text">.00</span>
                         </div>
 
-                        <label for="category" class="required form-label" style="color: #62717D">Category</label>
+                        <label for="category_id" class="required form-label" style="color: #62717D">Category</label>
                         <div class="input-group mb-5">
-                            <select name="category" id="category" class="border-hover-success form-control @error('category') is-invalid @enderror">
+                            <select name="category_id" id="category_id" class="border-hover-success form-control @error('category_id') is-invalid @enderror" required>
+                                <option value="">Select Category</option>
                                 @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ old('category', $product->category_id) == $category->id ? 'selected' : '' }}>
+                                <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
                                     {{ $category->name }}
                                 </option>
                                 @endforeach
                             </select>
-                            @error('category')
+                            @error('category_id')
                             <small class="invalid-feedback" role="alert">{{ $message }}</small>
                             @enderror
                         </div>
 
-                        <label for="description" class="required form-label" style="color: #62717D">Description</label>
+                        <label for="description" class="form-label">Description</label>
                         <div class="input-group mb-5">
-                            <textarea name="description" id="description" rows="4" class="border-hover-success form-control @error('description') is-invalid @enderror" placeholder="Description" required>{{ old('description', $product->description) }}</textarea>
+                            <textarea class="form-control editor @error('description') is-invalid @enderror" name="description" id="description" rows="5">{{ old('description', $product->description) }}</textarea>
                             @error('description')
                             <small class="invalid-feedback" role="alert">{{ $message }}</small>
                             @enderror
@@ -60,7 +66,7 @@
 
                         <label for="ingredients" class="required form-label" style="color: #62717D">Ingredients</label>
                         <div class="input-group mb-5">
-                            <textarea name="ingredients" id="ingredients" rows="4" class="border-hover-success form-control @error('ingredients') is-invalid @enderror" placeholder="ingredients" required>{{ old('ingredients', $product->ingredients) }}</textarea>
+                            <textarea class="form-control editor2 @error('ingredients') is-invalid @enderror" name="ingredients" id="ingredients" rows="5">{{ old('ingredients', $product->ingredients) }}</textarea>
                             @error('ingredients')
                             <small class="invalid-feedback" role="alert">{{ $message }}</small>
                             @enderror
@@ -79,4 +85,18 @@
         </div>
     </div>
 </form>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor.create(document.querySelector('.editor'))
+        .catch(error => {
+            console.error(error);
+        });
+
+    ClassicEditor.create(document.querySelector('.editor2'))
+        .catch(error => {
+            console.error(error);
+        });
+
+</script>
 @endsection

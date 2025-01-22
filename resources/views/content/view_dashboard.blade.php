@@ -2,7 +2,7 @@
 @section('content')
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
     <div class="row justify-content-center">
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
             <div class="card bg-hover-light-success transition ease-in-out delay-150 -translate-y-px-hover duration-300 scale-110-hover" style="border-radius: 10px">
                 <div class="card-body p-3">
                     <div class="row">
@@ -18,7 +18,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
             <div class="card bg-hover-light-success transition ease-in-out delay-150 -translate-y-px-hover duration-300 scale-110-hover" style="border-radius: 10px">
                 <div class="card-body p-3">
                     <div class="row">
@@ -34,7 +34,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
             <div class="card bg-hover-light-success transition ease-in-out delay-150 -translate-y-px-hover duration-300 scale-110-hover" style="border-radius: 10px">
                 <div class="card-body p-3">
                     <div class="row">
@@ -52,5 +52,4 @@
         </div>
     </div>
 </div>
-
 @endsection

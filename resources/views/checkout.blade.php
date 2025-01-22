@@ -12,6 +12,14 @@
             background-color: #343a40;
         }
 
+        .btn-custom {
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            max-width: 150px;
+            text-align: center;
+        }
+
         .navbar-brand img {
             border-radius: 50%;
         }
@@ -145,6 +153,15 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
+        @media (max-width: 768px) {
+
+            .btn-custom {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+                max-width: 120px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -169,10 +186,10 @@
                         <a class="nav-link" href="#product" id="nav-product">Product</a>
                     </li>
                     <li class="nav-item font-size-h5">
-                        <a class="nav-link" href="{{ route('orders.index') }}">My Order</a>
+                        <a class="nav-link" href="{{ route('orders.index') }}">Pesanan Saya</a>
                     </li>
                     <li class="nav-item font-size-h5 p-1">
-                        <a class="nav-link btn-info text-white" href="{{ route('cart.index') }}" style="border-radius: 6px">
+                        <a class="nav-link btn-info text-white btn-custom" href="{{ route('cart.index') }}" style="border-radius: 6px">
                             <i class="fa fa-shopping-cart"></i>
                         </a>
                     </li>
