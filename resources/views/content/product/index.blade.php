@@ -48,7 +48,7 @@
                                             <!--end::Menu item-->
                                             <!--begin::Menu item-->
                                             <div class="menu-item px-3" style="margin-top: 5px;">
-                                                <button class="btn btn-sm btn-danger w-100" data-toggle="modal" data-target="#delete-product">
+                                                <button class="btn btn-sm btn-danger w-100" data-toggle="modal" data-target="#delete-product-{{ $p->id }}">
                                                     Delete
                                                 </button>
                                             </div>
@@ -67,12 +67,12 @@
     </div>
 </div>
 
-@foreach ( $products as $product )
-<div class="modal fade" id="delete-product" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteProductLabel" aria-hidden="true">
+@foreach ($products as $product)
+<div class="modal fade" id="delete-product-{{ $product->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteProductLabel{{ $product->id }}" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-danger">
-                <h5 class="modal-title text-white" id="deleteProductLabel">Delete Product</h5>
+                <h5 class="modal-title text-white" id="deleteProductLabel{{ $product->id }}">Delete Product</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
@@ -91,7 +91,7 @@
         </div>
     </div>
 </div>
-
 @endforeach
+
 
 @endsection
