@@ -231,6 +231,14 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ $status === 'pending' ? 'active' : '' }}" href="{{ route('orders.index', ['status' => 'pending']) }}">
+                    Pending
+                    <span class="badge badge-secondary ml-1">
+                        {{ $statusCounts['pending'] ?? 0 }}
+                    </span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ $status === 'paid' ? 'active' : '' }}" href="{{ route('orders.index', ['status' => 'paid']) }}">
                     Paid
                     <span class="badge badge-success ml-1">
@@ -312,11 +320,14 @@
                 @if($order->status !== 'cancelled')
                 <div class="progress mb-3">
                     @switch($order->status)
-                    @case('process')
-                    <div class="progress-bar bg-warning" style="width: 25%"></div>
+                    @case('pending')
+                    <div class="progress-bar bg-priamry" style="width: 25%"></div>
                     @break
                     @case('paid')
-                    <div class="progress-bar bg-success" style="width: 75%"></div>
+                    <div class="progress-bar bg-success" style="width: 50%"></div>
+                    @break
+                    @case('process')
+                    <div class="progress-bar bg-warning" style="width: 75%"></div>
                     @break
                     @case('completed')
                     <div class="progress-bar bg-info" style="width: 100%"></div>
@@ -349,7 +360,7 @@
                     <div class="col-md-6">
                         <div class="order-timeline">
                             <div class="timeline-item">
-                                <div class="timeline-icon {{ in_array($order->status, ['process', 'paid', 'completed']) ? 'active' : '' }}">
+                                <div class="timeline-icon {{ in_array($order->status, ['pending','process', 'paid', 'completed']) ? 'active' : '' }}">
                                     <i class="fas fa-shopping-cart"></i>
                                 </div>
                                 <div class="timeline-content">

@@ -26,11 +26,10 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Minuman', 'slug' => Str::slug('Minuman')],
         ];
 
-        // Sisipkan atau perbarui data kategori
         foreach ($categories as $category) {
             Category::updateOrCreate(
-                ['slug' => $category['slug']], // Kondisi unik
-                ['name' => $category['name']] // Data yang akan diisi atau diperbarui
+                ['slug' => $category['slug']],
+                ['name' => $category['name']]
             );
         }
     }

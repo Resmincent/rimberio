@@ -15,6 +15,8 @@
             --border-radius: 8px;
         }
 
+
+
         /* Responsive typography */
         html {
             font-size: 16px;
@@ -348,6 +350,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}">
@@ -383,7 +386,6 @@
         }
 
         // Handle payment button click
-        // In your shopping cart view
         document.getElementById('pay-button').addEventListener('click', function(e) {
             e.preventDefault();
             showLoading();
@@ -406,32 +408,69 @@
                             onSuccess: function(result) {
                                 showLoading();
                                 // Redirect to orders page after successful payment
-                                window.location.href = '{{ route("orders.index", ["status" => "paid"]) }}';
+                                Swal.fire({
+                                    icon: 'success'
+                                    , title: 'Payment Successful!'
+                                    , text: 'Pembayaran Berhasil.'
+                                    , confirmButtonText: 'View Orders'
+                                    , willClose: () => {
+                                        window.location.href = '{{ route("orders.index", ["status" => "paid"]) }}';
+                                    }
+                                });
                             }
                             , onPending: function(result) {
                                 showLoading();
-                                // Redirect to orders page with pending status
-                                window.location.href = '{{ route("orders.index", ["status" => "pending"]) }}';
+                                Swal.fire({
+                                    icon: 'warning'
+                                    , title: 'Payment Pending'
+                                    , text: 'Pembayaran masih dalam prosess'
+                                    , confirmButtonText: 'View Orders'
+                                    , willClose: () => {
+                                        window.location.href = '{{ route("orders.index", ["status" => "pending"]) }}';
+                                    }
+                                });
                             }
                             , onError: function(result) {
-                                alert('Payment failed! Please try again.');
-                                // Redirect to orders page with failed status
-                                window.location.href = '{{ route("orders.index", ["status" => "failed"]) }}';
+                                Swal.fire({
+                                    icon: 'error'
+                                    , title: 'Payment Failed'
+                                    , text: 'Coba lagi'
+                                    , confirmButtonText: 'View Orders'
+                                    , willClose: () => {
+                                        window.location.href = '{{ route("orders.index", ["status" => "failed"]) }}';
+                                    }
+                                });
                             }
                             , onClose: function() {
-                                alert('You closed the payment window. Your order is still pending.');
-                                // Redirect to orders page with pending status
-                                window.location.href = '{{ route("orders.index", ["status" => "pending"]) }}';
+                                Swal.fire({
+                                    icon: 'warning'
+                                    , title: 'Payment Window Closed'
+                                    , text: 'Pesanan Anda masih tertunda. Harap selesaikan pembayaran nanti.'
+                                    , confirmButtonText: 'View Orders'
+                                    , willClose: () => {
+                                        window.location.href = '{{ route("orders.index", ["status" => "pending"]) }}';
+                                    }
+                                });
                             }
                         });
                     } else {
-                        alert(data.message || 'Something went wrong! Please try again.');
+                        Swal.fire({
+                            icon: 'error'
+                            , title: 'Error'
+                            , text: data.message || 'Something went wrong! Please try again.'
+                            , confirmButtonText: 'Close'
+                        });
                     }
                 })
                 .catch(error => {
                     hideLoading();
                     console.error('Error:', error);
-                    alert('Payment failed: ' + error.message);
+                    Swal.fire({
+                        icon: 'error'
+                        , title: 'Payment Failed'
+                        , text: error.message
+                        , confirmButtonText: 'Close'
+                    });
                 });
         });
 
